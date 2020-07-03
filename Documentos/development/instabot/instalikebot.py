@@ -2,34 +2,39 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 
-username = ""
-password = ""
+class InstagramBot:
+	def __init__(self, username, password):
+		self.username = username
+		self.password = password,
+		self.bot      = webdriver.Firefox(executable_path= '')
 
-getdriver = ("https://www.instagram.com/accounts/login/")
-global driver
-
-driver = webdriver.Chrome()
-driver.get(getdriver)
-
-time.sleep(1)
-
-driver.find_element_by_xpath("//input[@name='username']").send_keys(username)
-driver.find_element_by_xpath("//input[@name='password']").send_keys(password)
-driver.find_element_by_xpath("//button[contains(.,'Entrar')]").click()
-
-def first_picture(): 
+	def login(self):
+		bot = self.bot
+		bot.get('https://instagram.com/account/login')
+		time.sleep(3)
+		bot.find_element_by_name('username').send_keys(self.username)
+		bot.find_element_by_name('username').send_keys(self.password + Keys.RETURN)
+		time.sleep(3)
 	
-	# finds the first picture 
-	pic = driver.find_element_by_class_name("_9AhH0") 
-	pic.click() # clicks on the first picture 
+	def searchHashtag(self, hashtag):
+		bot = self.bot
 
-def like_pic(): 
-	time.sleep(4) 
-	like = driver.find_element_by_xpath('/html/body/div[3]/div[2]/div/article/div[2]/section[1]/span[1]/button/span') 
+		bot.get('https://www.instagram.com/explore/tags' + hashtag)
 
-	# you can find the like button using class name too 
-	time.sleep(2) 
-	like.click() # clicking the like button 
+	def likePhotos(self, amount):
+		bot = self.bot
+		bot.find_elements_by_class_name('v1Nh3').click()
 
-first_picture()
-like_pic()
+		i = 1
+		while i <= amount:
+			time.sleep(1)
+			bot.find_elements_by_class_name('fr66n').click()
+			bot.find_elements_by_class_name('coreSpriteRightPaginationArrow').click()
+			i += 1
+		
+		bot.get('https://instagram.com/' + self.username)
+
+insta = InstagramBot('username', 'password')
+insta.login()
+insta.searchHashtag('travel')
+insta.likePhotos(3)
